@@ -29,7 +29,7 @@ function main() {
     textureLoader.load("/three.png"),
     textureLoader.load("/github.png"),
     textureLoader.load("/express.png"),
-    textureLoader.load("/postgresql.svg"),
+    textureLoader.load("/postgresql.png"),
     textureLoader.load("/typescript.png"),
   ];
 
@@ -61,7 +61,11 @@ function main() {
     uvs.push(0.5, 0, 0.9330127018922194, 0.75, 0.06698729810778059, 0.75);
     uvs.push(0.5, 0, 0.9330127018922194, 0.75, 0.06698729810778059, 0.75);
     g.setAttribute("uv", new THREE.Float32BufferAttribute(uvs, 2));
+
+    console.log(uvs);
   }
+
+
 
   setOctahedron(geometry);
 
@@ -87,11 +91,49 @@ function main() {
   light.position.set(-1, 2, 4);
   scene.add(light);
 
-  function render() {
-    octa.rotation.x += 0.01;
-    octa.rotation.y += 0.01;
+  const raycaster = new THREE.Raycaster();
+  const pointer = new THREE.Vector2();
+ 
 
-    newInstance.rotation.x += 0.01;
+  document.addEventListener("mousedown", onPointerMove);
+
+
+  function onPointerMove(event) {
+    const coords = new THREE.Vector2(
+      (event.clientX / renderer.domElement.clientWidth) * 2 - 1,
+      -((event.clientY / renderer.domElement.clientHeight) * 2 - 1),
+    );
+
+    raycaster.setFromCamera(coords, camera);
+    const typeScript = {materialIndex: 7};
+    const intersections = raycaster.intersectObjects(scene.children, true);
+    if (intersections.length > 0) {
+      const face = intersections[0].face;
+      console.log(face);
+      console.log(typeScript)
+     if(face.materialIndex === 7){
+      console.log("TypeScript");
+     }if(face.materialIndex === 0){
+      console.log("React");
+     }if(face.materialIndex === 6){
+      console.log("PostGreSQL");
+     }if(face.materialIndex === 1){
+      console.log("Node.js");
+     }if(face.materialIndex === 5) {
+      console.log("Express.js");
+     }if(face.materialIndex === 3){
+      console.log("Three.js");
+     }
+  }
+
+}
+
+
+  function render() {
+    octa.rotation.x += -0.02;
+   octa.rotation.y += 0.01;
+
+    newInstance.rotation.x += -0.02;
     newInstance.rotation.y += 0.01;
 
     renderer.render(scene, camera);
